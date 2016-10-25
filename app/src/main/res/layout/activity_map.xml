@@ -9,15 +9,15 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="edu.sjsu.starruc.sjsumap.MapActivity">
+    android:background="@drawable/campusmap1"
+    tools:context="edu.sjsu.starruc.sjsumap.MapActivity"
+    android:weightSum="1">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/search_text"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:maxLines="1"
+        />
 
-    <Button
-        android:id="@+id/detail_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 </LinearLayout>

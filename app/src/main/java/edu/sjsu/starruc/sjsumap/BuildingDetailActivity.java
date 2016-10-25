@@ -17,7 +17,7 @@ public class BuildingDetailActivity extends AppCompatActivity {
         dataSource = new BuildingDataSource(this);
         dataSource.open();
         String buildingName = getIntent().getStringExtra("buildingName");
-        Building building = dataSource.getBuildingByName(buildingName);
+        Building building = dataSource.findBuildingByName(buildingName);
         if (building == null) {
             buildingText.setText("No buildings available");
         }

@@ -15,10 +15,15 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_ADDRESS = "address";
     public static final String COLUMN_PHOTO_URL = "photo_url";
-
+    public static final String COLUMN_X1 = "x1";
+    public static final String COLUMN_Y1 = "y1";
+    public static final String COLUMN_X2 = "x2";
+    public static final String COLUMN_Y2 = "y2";
+    public static final String COLUMN_CX = "cx";
+    public static final String COLUMN_CY = "cy";
 
     private static final String DATABASE_NAME = "buildings.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Database creation sql statement
     private static final String DATABASE_CREATE = "create table "
@@ -26,7 +31,13 @@ public class DbHelper extends SQLiteOpenHelper {
             + " integer primary key autoincrement, " + COLUMN_NAME
             + " text not null, " + COLUMN_ADDRESS
             + " text not null, " + COLUMN_PHOTO_URL
-            + " text not null);";
+            + " text not null, " + COLUMN_X1
+            + " integer, " + COLUMN_Y1
+            + " integer, " + COLUMN_X2
+            + " integer, " + COLUMN_Y2
+            + " integer, " + COLUMN_CX
+            + " integer, " + COLUMN_CY
+            + ");";
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -34,6 +45,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
+        database.execSQL("drop table if exists " + TABLE_BUILDING);
         database.execSQL(DATABASE_CREATE);
     }
 
