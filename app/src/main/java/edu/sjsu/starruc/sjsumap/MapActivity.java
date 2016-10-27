@@ -105,7 +105,10 @@ public class MapActivity extends AppCompatActivity {
             emptyResultAlert.show();
         }
         else {
-//            buildingText.setText(building.toString());
+            Intent intent = new Intent(MapActivity.this, BuildingDetailActivity.class);
+               // String buildingName = "King Library";
+                intent.putExtra("buildingName", name);
+                startActivity(intent);
         }
 
     }

@@ -13,33 +13,61 @@
     <TextView
         android:id="@+id/building_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/addressText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Address"
+        android:layout_below="@id/building_name"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"/>
     <TextView
         android:id="@+id/address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Address"
-    android:layout_below="@id/building_name"/>
+        android:layout_below="@id/addressText"
+        android:textSize="18dp"
+        android:layout_marginTop="10dp"/>
     <TextView
         android:id="@+id/distanceText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Distance"
-        android:layout_below="@id/address"/>
+        android:textSize="20dp"
+        android:layout_below="@id/address"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"/>
     <TextView
         android:id="@+id/distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/distanceText"/>
+        android:textSize="18dp"
+        android:layout_below="@id/distanceText"
+        android:layout_marginTop="10dp"/>
     <TextView
         android:id="@+id/travelTimeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/distance"
-        android:text="Travel time"/>
+        android:textSize="20dp"
+        android:text="Travel time"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"/>
     <TextView
         android:id="@+id/travelTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/travelTimeText"/>
+        android:textSize="18dp"
+        android:layout_below="@id/travelTimeText"
+        android:layout_marginTop="10dp"/>
+    <Button
+        android:id="@+id/streetview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="StreetView"
+        android:layout_below="@id/travelTime"/>
 </RelativeLayout>

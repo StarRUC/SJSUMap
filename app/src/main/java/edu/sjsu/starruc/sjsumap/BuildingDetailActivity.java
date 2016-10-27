@@ -3,9 +3,11 @@ package edu.sjsu.starruc.sjsumap;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -32,8 +34,10 @@ public class BuildingDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_building_detail);
 
         TextView buildingNameTextView = (TextView) findViewById(R.id.building_name);
+        TextView buildingAddressTextView = (TextView) findViewById(R.id.address);
         TextView distanceTextView = (TextView) findViewById(R.id.distance);
         TextView travelTimeTextView = (TextView) findViewById(R.id.travelTime);
+        Button streetViewBtn = (Button) findViewById(R.id.streetview);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         dataSource = new BuildingDataSource(this);
@@ -53,6 +57,7 @@ public class BuildingDetailActivity extends AppCompatActivity {
         }
         else {
             buildingNameTextView.setText(buildingName);
+            buildingAddressTextView.setText(address);
             String strUrl = null;
             try {
                 strUrl = url_first + latitude + "," + longitude + url_second + URLEncoder.encode(building.getAddress(), "utf-8") + api_key;
