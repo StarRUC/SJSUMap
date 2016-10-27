@@ -1,59 +1,92 @@
 package edu.sjsu.starruc.sjsumap;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewManager;
+import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-public class MapActivity extends AppCompatActivity {
+public class MapActivity extends AppCompatActivity implements LocationListener {
+    private RelativeLayout layout;
+    private RelativeLayout.LayoutParams layoutParams;
+    private DisplayMetrics metrics;
+    private DrawView buildingRectangle;
 
-    private BuildingDataSource dataSource;
+    protected LocationManager locationManager;
+    protected LocationListener locationListener;
+
+    private BuildingManager buildingManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        dataSource = new BuildingDataSource(this);
-        dataSource.open();
-        dataSource.addBuilding("King Library",
-                "Dr. Martin Luther King, Jr. Library, " +
-                        "150 East San Fernando Street, " +
-                        "San Jose, CA 95112",
-                "King.jpg", 100, 700, 300, 1050);
+        ActionBar ab = getSupportActionBar();
+        ab.hide();
 
-        dataSource.addBuilding("Engineering Building",
-                "San Jose State University Charles W. Davidson " +
-                        "College of Engineering, 1 Washington " +
-                        "Square, San Jose, CA 95112",
-                "Eng.jpg", 700, 700, 950, 1100);
+        layout = (RelativeLayout) findViewById(R.id.activity_map);
+        buildingRectangle = new DrawView(this);
+        buildingRectangle.setVisibility(View.INVISIBLE);
+        layout.addView(buildingRectangle);
 
-        dataSource.addBuilding("Yoshihiro Uchida Hall",
-                "Yoshihiro Uchida Hall, San Jose, CA 95112",
-                "Eng.jpg", 100, 1500, 300, 1750);
+        metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        dataSource.addBuilding("Student Union",
-                "Student Union Building, San Jose, CA 95112",
-                "Eng.jpg", 700, 1100, 1050, 1300);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        try {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        }
+        catch (SecurityException e) {
+            e.printStackTrace();
+        }
 
-        dataSource.addBuilding("BBC",
-                "Boccardo Business Complex, San Jose, CA 95112",
-                "Eng.jpg", 1150, 1300, 1300, 1500);
-
-        dataSource.addBuilding("South Parking Garage",
-                " San Jose State University South Garage, " +
-                        "330 South 7th Street, San Jose, CA 95112",
-                "Eng.jpg", 400, 2050, 700, 2400);
-
+        buildingManager = new BuildingManager();
 
         final EditText searchText = (EditText) findViewById(R.id.search_text);
-        searchText.setOnKeyListener(new View.OnKeyListener()
+        final TextWatcher textWatcher = new TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0) {
+                    buildingRectangle.setVisibility(View.GONE);
+                }
+            }
+        };
+        searchText.addTextChangedListener(textWatcher);
+
+        searchText.setOnKeyListener(new EditText.OnKeyListener()
         {
             public boolean onKey(View v, int keyCode, KeyEvent event)
             {
@@ -72,25 +105,10 @@ public class MapActivity extends AppCompatActivity {
             }
         });
 
-//        Button detailButton = (Button) findViewById(R.id.detail_button);
-//
-//        View.OnClickListener listener = new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MapActivity.this, BuildingDetailActivity.class);
-//                String buildingName = "King Library";
-//                intent.putExtra("buildingName", buildingName);
-//                startActivity(intent);
-//            }
-//        };
-//
-//        detailButton.setOnClickListener(listener);
     }
 
     private void searchBuildingByName(String name) {
-        dataSource.open();
-        Building building = dataSource.findBuildingByName(name);
+        Building building = buildingManager.findBuildingByName(name);
         if (building == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Sorry! No match buildings found.")
@@ -105,27 +123,23 @@ public class MapActivity extends AppCompatActivity {
             emptyResultAlert.show();
         }
         else {
-//            buildingText.setText(building.toString());
+            buildingRectangle.setX(building.getCx() * metrics.widthPixels / 1440);
+            buildingRectangle.setY(building.getCy() * metrics.heightPixels / 2560 - 50);
+            buildingRectangle.setVisibility(View.VISIBLE);
+
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(findViewById(R.id.search_text).getWindowToken(), 0);
         }
 
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-//        System.out.println("getX() = " + x);
-//        System.out.println("getY() = " + y);
-//
-//        x = (int)event.getRawX();
-//        y = (int)event.getRawY();
-//        System.out.println("getRawX() = " + x);
-//        System.out.println("getRawY() = " + y);
-
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 int x = (int)event.getX();
                 int y = (int)event.getY();
-                dataSource.open();
-                Building building = dataSource.findBuildingByLocation(x, y);
+                Building building = buildingManager.findBuildingByLocation(x, y);
                 if (building != null) {
                     Intent intent = new Intent(MapActivity.this, BuildingDetailActivity.class);
                     String buildingName = building.getName();
@@ -138,5 +152,26 @@ public class MapActivity extends AppCompatActivity {
         }
 
         return false;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+//        txtLat = (TextView) findViewById(R.id.textview1);
+//        txtLat.setText("Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        Log.d("Latitude","disable");
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        Log.d("Latitude","enable");
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        Log.d("Latitude","status");
     }
 }

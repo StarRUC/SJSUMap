@@ -5,7 +5,8 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 public class BuildingDetailActivity extends AppCompatActivity {
-    private BuildingDataSource dataSource;
+//    private BuildingDataSource dataSource;
+    private BuildingManager buildingManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,10 +15,12 @@ public class BuildingDetailActivity extends AppCompatActivity {
 
         TextView buildingText = (TextView) findViewById(R.id.building_text);
 
-        dataSource = new BuildingDataSource(this);
-        dataSource.open();
         String buildingName = getIntent().getStringExtra("buildingName");
-        Building building = dataSource.findBuildingByName(buildingName);
+        buildingManager = new BuildingManager();
+        Building building = buildingManager.findBuildingByName(buildingName);
+//        dataSource = new BuildingDataSource(this);
+//        dataSource.open();
+//        Building building = dataSource.findBuildingByName(buildingName);
         if (building == null) {
             buildingText.setText("No buildings available");
         }

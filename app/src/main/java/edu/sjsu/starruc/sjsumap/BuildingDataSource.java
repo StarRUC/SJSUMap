@@ -68,7 +68,7 @@ public class BuildingDataSource {
 
     public Building findBuildingByName(String name) {
         Cursor cursor = database.query(DbHelper.TABLE_BUILDING,
-                allColumns, DbHelper.COLUMN_NAME + " like \"" + name + "\"",
+                allColumns, DbHelper.COLUMN_NAME + " like \"" + name + "%\"",
                 null, null, null, null);
         if (cursor == null || cursor.getCount() == 0) return null;
 
