@@ -1,8 +1,10 @@
 package edu.sjsu.starruc.sjsumap;
 
+import android.content.Intent;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -27,6 +29,11 @@ public class BuildingDetailActivity extends AppCompatActivity {
     private String url_first = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=";
     private String url_second = "&destinations=";
     private String api_key = "&key=AIzaSyCTVoZI8aOu9zn9TKc2TJtTh8fOSxXkDBI";
+    private String api_key2 = "&key=AIzaSyAb9-5iPgr7Ztg9PTokecodWQ9hZcnDbRs";
+    private String api_key_location = "&key=AIzaSyD1s6smr584UMxRRG9FCkBqbfRaXxlLpso";
+    private String url_location1 = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+    private String address = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +44,7 @@ public class BuildingDetailActivity extends AppCompatActivity {
         TextView buildingAddressTextView = (TextView) findViewById(R.id.address);
         TextView distanceTextView = (TextView) findViewById(R.id.distance);
         TextView travelTimeTextView = (TextView) findViewById(R.id.travelTime);
-        Button streetViewBtn = (Button) findViewById(R.id.streetview);
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         dataSource = new BuildingDataSource(this);
@@ -46,7 +53,6 @@ public class BuildingDetailActivity extends AppCompatActivity {
         Building building = dataSource.findBuildingByName(buildingName);
         double longitude = -121.884999;//getIntent().getDoubleExtra("user_longitude",1.2);
         double latitude = 37.335507;//getIntent().getDoubleExtra("user_latitude", 1.2);
-        String address = building.getAddress();
 
 
         dataSource = new BuildingDataSource(this);
@@ -54,8 +60,8 @@ public class BuildingDetailActivity extends AppCompatActivity {
 
         if (building == null) {
             buildingNameTextView.setText("No buildings available");
-        }
-        else {
+        } else {
+            address = building.getAddress();
             buildingNameTextView.setText(buildingName);
             buildingAddressTextView.setText(address);
             String strUrl = null;
@@ -77,9 +83,9 @@ public class BuildingDetailActivity extends AppCompatActivity {
 
                 JSONObject jsonResponse = this.convertStringToJson(response);
                 String rows = jsonResponse.getString("rows");
-                JSONObject jsonrows = this.convertStringToJson(rows.substring(1, rows.length()-1));
+                JSONObject jsonrows = this.convertStringToJson(rows.substring(1, rows.length() - 1));
                 String elements = jsonrows.getString("elements");
-                JSONObject jsonElements = this.convertStringToJson(elements.substring(1, elements.length()-1));
+                JSONObject jsonElements = this.convertStringToJson(elements.substring(1, elements.length() - 1));
 
                 JSONObject jsonDistance = this.convertStringToJson(jsonElements.getString("distance"));
                 JSONObject jsonDuration = this.convertStringToJson(jsonElements.getString("duration"));
@@ -87,6 +93,7 @@ public class BuildingDetailActivity extends AppCompatActivity {
                 String duration = jsonDuration.getString("text");
                 distanceTextView.setText(distance);
                 travelTimeTextView.setText(duration);
+                streetButtonListener();
             } catch (Exception e) {
                 System.out.print(e.toString());
             } finally {
@@ -97,7 +104,43 @@ public class BuildingDetailActivity extends AppCompatActivity {
 
     }
 
-    private JSONObject convertStringToJson(String str) {
+    private void streetButtonListener() {
+        Button streetViewBtn = (Button) findViewById(R.id.streetview);
+        streetViewBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HttpURLConnection conn = null;
+                try {
+                    String strUrl = url_location1 + URLEncoder.encode(address, "utf-8") + api_key_location;
+                    URL url = new URL(strUrl);
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.connect();
+                    InputStream in = new BufferedInputStream(conn.getInputStream());
+                    BufferedReader r = new BufferedReader(new InputStreamReader(in));
+                    String response = BuildingDetailActivity.convertStreamToString(in);
+
+                    JSONObject jsonResponse = BuildingDetailActivity.convertStringToJson(response);
+                    String results = jsonResponse.getString("results");
+                    JSONObject resultJson = BuildingDetailActivity.convertStringToJson(results.substring(1, results.length() - 1));
+                    JSONObject geometry = BuildingDetailActivity.convertStringToJson(resultJson.getString("geometry"));
+                    String location = geometry.getString("location");
+                    JSONObject locationJson = BuildingDetailActivity.convertStringToJson(location);
+                    double lat = locationJson.getDouble("lat");
+                    double lng = locationJson.getDouble("lng");
+                    Intent intent = new Intent(BuildingDetailActivity.this, StreetviewActivity.class);
+
+                    intent.putExtra("lat", lat);
+                    intent.putExtra("lng", lng);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    System.out.print(e.toString());
+                }
+            }
+        });
+    }
+
+
+    protected static JSONObject convertStringToJson(String str) {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(str);
@@ -107,7 +150,7 @@ public class BuildingDetailActivity extends AppCompatActivity {
         return jsonObject;
     }
 
-    private String convertStreamToString(InputStream inputStream) throws IOException {
+    protected static String convertStreamToString(InputStream inputStream) throws IOException {
         if (inputStream == null) {
             return null;
         }

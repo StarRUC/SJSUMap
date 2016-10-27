@@ -19,7 +19,10 @@ public class MapActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-
+        Intent intent = new Intent(MapActivity.this, BuildingDetailActivity.class);
+        String buildingName = "King Library";
+        intent.putExtra("buildingName", buildingName);
+        startActivity(intent);
         dataSource = new BuildingDataSource(this);
         dataSource.open();
         dataSource.addBuilding("King Library",
