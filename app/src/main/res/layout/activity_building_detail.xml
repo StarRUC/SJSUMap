@@ -11,8 +11,35 @@
     tools:context="edu.sjsu.starruc.sjsumap.BuildingDetailActivity">
 
     <TextView
-        android:id="@+id/building_text"
+        android:id="@+id/building_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-
+    <TextView
+        android:id="@+id/address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Address"
+    android:layout_below="@id/building_name"/>
+    <TextView
+        android:id="@+id/distanceText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Distance"
+        android:layout_below="@id/address"/>
+    <TextView
+        android:id="@+id/distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/distanceText"/>
+    <TextView
+        android:id="@+id/travelTimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/distance"
+        android:text="Travel time"/>
+    <TextView
+        android:id="@+id/travelTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/travelTimeText"/>
 </RelativeLayout>
