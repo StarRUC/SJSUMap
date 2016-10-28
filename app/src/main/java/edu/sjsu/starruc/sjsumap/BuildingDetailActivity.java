@@ -1,15 +1,16 @@
 package edu.sjsu.starruc.sjsumap;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -33,6 +34,10 @@ public class BuildingDetailActivity extends AppCompatActivity {
     private String api_key_location = "&key=AIzaSyD1s6smr584UMxRRG9FCkBqbfRaXxlLpso";
     private String url_location1 = "https://maps.googleapis.com/maps/api/geocode/json?address=";
     private String address = null;
+    double buildingLongitude = -121.88424124;;
+    double buildingLatitude = 37.33342877;;
+    double userLongitude = -122.036078;
+    double userLatitude = 37.55968;
 
 
     @Override
@@ -45,14 +50,13 @@ public class BuildingDetailActivity extends AppCompatActivity {
         TextView distanceTextView = (TextView) findViewById(R.id.distance);
         TextView travelTimeTextView = (TextView) findViewById(R.id.travelTime);
 
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         dataSource = new BuildingDataSource(this);
         dataSource.open();
         String buildingName = getIntent().getStringExtra("buildingName");
         Building building = dataSource.findBuildingByName(buildingName);
-        double longitude = -121.884999;//getIntent().getDoubleExtra("user_longitude",1.2);
-        double latitude = 37.335507;//getIntent().getDoubleExtra("user_latitude", 1.2);
 
 
         dataSource = new BuildingDataSource(this);
@@ -66,7 +70,7 @@ public class BuildingDetailActivity extends AppCompatActivity {
             buildingAddressTextView.setText(address);
             String strUrl = null;
             try {
-                strUrl = url_first + latitude + "," + longitude + url_second + URLEncoder.encode(building.getAddress(), "utf-8") + api_key;
+                strUrl = url_first + userLatitude + "," + userLongitude + url_second + URLEncoder.encode(building.getAddress(), "utf-8") + api_key;
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -94,6 +98,7 @@ public class BuildingDetailActivity extends AppCompatActivity {
                 distanceTextView.setText(distance);
                 travelTimeTextView.setText(duration);
                 streetButtonListener();
+                getImage();
             } catch (Exception e) {
                 System.out.print(e.toString());
             } finally {
@@ -103,38 +108,37 @@ public class BuildingDetailActivity extends AppCompatActivity {
         dataSource.close();
 
     }
+    private void getImage() {
+        HttpURLConnection conn = null;
+        try {
+            String strUrl = "https://maps.googleapis.com/maps/api/streetview?size=150x150&location="
+                    + buildingLatitude + "," + buildingLongitude + "&heading=260.78&pitch=-0.76" + api_key_location;
+            URL url = new URL(strUrl);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.connect();
+            InputStream in = new BufferedInputStream(conn.getInputStream());
+            Drawable d = Drawable.createFromStream(in, "image");
+            //BufferedReader r = new BufferedReader(new InputStreamReader(in));
+            ImageView imageView = (ImageView) findViewById(R.id.building_image);
+            imageView.setImageDrawable(d);
+        } catch (Exception e) {
+            System.out.print(e.toString());
+        }
+    }
+
 
     private void streetButtonListener() {
         Button streetViewBtn = (Button) findViewById(R.id.streetview);
         streetViewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HttpURLConnection conn = null;
-                try {
-                    String strUrl = url_location1 + URLEncoder.encode(address, "utf-8") + api_key_location;
-                    URL url = new URL(strUrl);
-                    conn = (HttpURLConnection) url.openConnection();
-                    conn.connect();
-                    InputStream in = new BufferedInputStream(conn.getInputStream());
-                    BufferedReader r = new BufferedReader(new InputStreamReader(in));
-                    String response = BuildingDetailActivity.convertStreamToString(in);
 
-                    JSONObject jsonResponse = BuildingDetailActivity.convertStringToJson(response);
-                    String results = jsonResponse.getString("results");
-                    JSONObject resultJson = BuildingDetailActivity.convertStringToJson(results.substring(1, results.length() - 1));
-                    JSONObject geometry = BuildingDetailActivity.convertStringToJson(resultJson.getString("geometry"));
-                    String location = geometry.getString("location");
-                    JSONObject locationJson = BuildingDetailActivity.convertStringToJson(location);
-                    double lat = locationJson.getDouble("lat");
-                    double lng = locationJson.getDouble("lng");
                     Intent intent = new Intent(BuildingDetailActivity.this, StreetviewActivity.class);
 
-                    intent.putExtra("lat", lat);
-                    intent.putExtra("lng", lng);
+                    intent.putExtra("lat", buildingLatitude);
+                    intent.putExtra("lng", buildingLongitude);
                     startActivity(intent);
-                } catch (Exception e) {
-                    System.out.print(e.toString());
-                }
+
             }
         });
     }

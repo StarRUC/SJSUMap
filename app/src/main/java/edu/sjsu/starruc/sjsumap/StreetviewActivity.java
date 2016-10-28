@@ -16,7 +16,14 @@ public class StreetviewActivity extends AppCompatActivity {
     private StreetViewPanorama mPanorama;
     protected static double lng;
     protected static double lat;
-
+    /**
+     * King Library 37.3358992, -121.8855567
+     * Engineering Building  37.33773655, -121.8818146
+     * Yoshihiro Uchida Hall 37.33342877 121.88424124
+     * Student Union Building 37.33686433 -121.87818825
+     * BBC 37.33691724 -122.036078
+     * South Parking Garage  37.3334663 -121.8799324
+     */
     private static final String STREETVIEW_BUNDLE_KEY = "StreetViewBundleKey";
 
     @Override
@@ -31,7 +38,7 @@ public class StreetviewActivity extends AppCompatActivity {
         mStreetViewPanoramaView.getStreetViewPanoramaAsync(new OnStreetViewPanoramaReadyCallback() {
             @Override
             public void onStreetViewPanoramaReady(StreetViewPanorama panorama) {
-                panorama.setPosition(new LatLng(-33.87365, 151.20689));
+                panorama.setPosition(new LatLng(StreetviewActivity.lat, StreetviewActivity.lng));
                 mPanorama = panorama;
             }
         });

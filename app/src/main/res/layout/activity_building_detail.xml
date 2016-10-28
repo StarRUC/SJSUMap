@@ -24,14 +24,14 @@
         android:layout_below="@id/building_name"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="5dp"/>
     <TextView
         android:id="@+id/address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/addressText"
         android:textSize="18dp"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="5dp"/>
     <TextView
         android:id="@+id/distanceText"
         android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
         android:textSize="20dp"
         android:layout_below="@id/address"
         android:textStyle="bold"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="5dp"/>
     <TextView
         android:id="@+id/distance"
         android:layout_width="wrap_content"
@@ -56,18 +56,25 @@
         android:textSize="20dp"
         android:text="Travel time"
         android:textStyle="bold"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="5dp"/>
     <TextView
         android:id="@+id/travelTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18dp"
         android:layout_below="@id/travelTimeText"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="5dp"/>
+    <ImageView
+        android:id="@+id/building_image"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@drawable/king"
+        android:layout_below="@id/travelTime"/>
     <Button
         android:id="@+id/streetview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="StreetView"
-        android:layout_below="@id/travelTime"/>
+        android:layout_below="@id/building_image"/>
+
 </RelativeLayout>
