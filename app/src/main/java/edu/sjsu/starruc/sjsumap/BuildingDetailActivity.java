@@ -78,8 +78,8 @@ public class BuildingDetailActivity extends AppCompatActivity {
             buildingAddressTextView.setText(address);
             String strUrl = null;
             try {
-                strUrl = url_first + userLatitude + "," + userLongitude + url_second + URLEncoder.encode(building.getAddress(), "utf-8") + api_key;
-            } catch (UnsupportedEncodingException e) {
+                strUrl = url_first + userLatitude + "," + userLongitude + url_second + building.getLat() + "," + building.getLng() + api_key;
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             HttpURLConnection conn = null;
