@@ -22,17 +22,11 @@ public class MapPinWidget extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
-//        paint.setColor(Color.BLUE);
-//        paint.setStrokeWidth(3);
-//        canvas.drawRect(0, 0, 50, 50, paint);
-
-        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.pin);
+        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.blue_pin);
         Matrix matrix=new Matrix();
-        matrix.postScale(0.05f, 0.05f);
-//        matrix.postRotate(45);
+        matrix.postScale(0.25f, 0.25f);
         Bitmap dstbmp=Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),
                 bmp.getHeight(),matrix,true);
-//        canvas.drawColor(Color.BLACK);
         canvas.drawBitmap(dstbmp, 0, 0, null);
     }
 

@@ -1,5 +1,7 @@
 package edu.sjsu.starruc.sjsumap;
 
+import android.*;
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -16,31 +19,26 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewManager;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-public class MapActivity extends AppCompatActivity implements LocationListener {
+public class MapActivity extends AppCompatActivity{
     private RelativeLayout layout;
-    private RelativeLayout.LayoutParams layoutParams;
     private DisplayMetrics metrics;
-    private DrawView buildingRectangle;
+    private MapPinWidget buildingRectangle;
+    private CurrentLocationWidget curLoc;
+    private double latitude;
+    private double longitude;
 
+    protected String[] permissions;
     protected LocationManager locationManager;
     protected LocationListener locationListener;
 
-    private BuildingManager buildingManager;
+    private CampusManager campusManager;
 
 
     @Override
@@ -51,64 +49,114 @@ public class MapActivity extends AppCompatActivity implements LocationListener {
         ActionBar ab = getSupportActionBar();
         ab.hide();
 
+        campusManager = new CampusManager();
+
         layout = (RelativeLayout) findViewById(R.id.activity_map);
-        buildingRectangle = new DrawView(this);
+
+        buildingRectangle = new MapPinWidget(this);
         buildingRectangle.setVisibility(View.INVISIBLE);
         layout.addView(buildingRectangle);
+
+        curLoc = new CurrentLocationWidget(this);
+        curLoc.setVisibility(View.INVISIBLE);
+        layout.addView(curLoc);
 
         metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-        }
-        catch (SecurityException e) {
-            e.printStackTrace();
-        }
+        permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION};
 
-        buildingManager = new BuildingManager();
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                if (campusManager.isInCampus(location)) {
+                    curLoc.setVisibility(View.INVISIBLE);
+
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+
+                    int[] newPos = campusManager.mapLocationToPixels(location);
+                    curLoc.setX(newPos[0] - 10);
+                    curLoc.setY(newPos[1] - 30);
+                    curLoc.setVisibility(View.VISIBLE);
+                }
+
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, permissions, 1);
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+
 
         final EditText searchText = (EditText) findViewById(R.id.search_text);
-        final TextWatcher textWatcher = new TextWatcher() {
+
+        searchText.addTextChangedListener(new TextWatcher() {
+            @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
 
+            @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
             }
 
+            @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() == 0) {
                     buildingRectangle.setVisibility(View.GONE);
                 }
-            }
-        };
-        searchText.addTextChangedListener(textWatcher);
 
-        searchText.setOnKeyListener(new EditText.OnKeyListener()
-        {
-            public boolean onKey(View v, int keyCode, KeyEvent event)
-            {
-                if (event.getAction() == KeyEvent.ACTION_DOWN)
-                {
-                    switch (keyCode)
-                    {
-                        case KeyEvent.KEYCODE_ENTER:
-                            searchBuildingByName(searchText.getText().toString());
-                            return true;
-                        default:
-                            break;
-                    }
-                }
-                return false;
             }
         });
 
+        searchText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(v.getId() == R.id.search_text && !hasFocus) {
+                    InputMethodManager imm =  (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                }
+            }
+        });
+
+        final Looper looper = null;
+        ImageButton searchButton = (ImageButton) findViewById(R.id.search_button);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (searchText.getText().toString().length() > 0) {
+                    searchBuildingByName(searchText.getText().toString());
+                }
+            }
+        });
     }
 
     private void searchBuildingByName(String name) {
-        Building building = buildingManager.findBuildingByName(name);
+        Building building = campusManager.findBuildingByName(name);
         if (building == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Sorry! No match buildings found.")
@@ -123,8 +171,8 @@ public class MapActivity extends AppCompatActivity implements LocationListener {
             emptyResultAlert.show();
         }
         else {
-            buildingRectangle.setX(building.getCx() * metrics.widthPixels / 1440);
-            buildingRectangle.setY(building.getCy() * metrics.heightPixels / 2560 - 50);
+            buildingRectangle.setX(building.getCx() * 1380 / 579 - 10);
+            buildingRectangle.setY(building.getCy() * 2280 / 926 - 30);
             buildingRectangle.setVisibility(View.VISIBLE);
 
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -139,11 +187,14 @@ public class MapActivity extends AppCompatActivity implements LocationListener {
             case MotionEvent.ACTION_DOWN:
                 int x = (int)event.getX();
                 int y = (int)event.getY();
-                Building building = buildingManager.findBuildingByLocation(x, y);
+                Building building = campusManager.findBuildingByLocation(x, y);
                 if (building != null) {
                     Intent intent = new Intent(MapActivity.this, BuildingDetailActivity.class);
                     String buildingName = building.getName();
                     intent.putExtra("buildingName", buildingName);
+                    intent.putExtra("latitude", latitude);
+                    intent.putExtra("longitude", longitude);
+
                     startActivity(intent);
                 }
                 break;
@@ -154,24 +205,4 @@ public class MapActivity extends AppCompatActivity implements LocationListener {
         return false;
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-//        txtLat = (TextView) findViewById(R.id.textview1);
-//        txtLat.setText("Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        Log.d("Latitude","disable");
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        Log.d("Latitude","enable");
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        Log.d("Latitude","status");
-    }
 }
