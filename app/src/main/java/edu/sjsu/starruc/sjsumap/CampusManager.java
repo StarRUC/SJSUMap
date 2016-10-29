@@ -7,10 +7,10 @@ import java.util.List;
  * Created by StarRUC on 10/26/16.
  */
 
-public class BuildingManager {
+public class CampusManager {
     private static List<Building> buildingList = null;
 
-    public BuildingManager() {
+    public CampusManager() {
         if (buildingList == null) {
             buildingList = new ArrayList<>();
 
