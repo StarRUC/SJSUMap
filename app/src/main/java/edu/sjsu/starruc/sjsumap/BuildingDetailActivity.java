@@ -56,7 +56,15 @@ public class BuildingDetailActivity extends AppCompatActivity {
         dataSource = new BuildingDataSource(this);
         dataSource.open();
         String buildingName = getIntent().getStringExtra("buildingName");
-        Building building = dataSource.findBuildingByName(buildingName);
+        userLatitude = getIntent().getDoubleExtra("latitude", 1.2);
+        userLongitude = getIntent().getDoubleExtra("longitude", 1.2);
+        CampusManager campusManager = new CampusManager();
+        Building building = campusManager.findBuildingByName(buildingName);
+        buildingLatitude = building.getLat();
+        buildingLongitude = building.getLng();
+
+
+
 
 
         dataSource = new BuildingDataSource(this);

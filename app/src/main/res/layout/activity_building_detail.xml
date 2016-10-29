@@ -68,7 +68,6 @@
         android:id="@+id/building_image"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:background="@drawable/king"
         android:layout_below="@id/travelTime"/>
     <Button
         android:id="@+id/streetview"

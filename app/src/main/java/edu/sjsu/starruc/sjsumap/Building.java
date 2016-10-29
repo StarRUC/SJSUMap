@@ -15,12 +15,14 @@ public class Building {
     private int y2;
     private int cx;
     private int cy;
+    private double lat;
+    private double lng;
 
     public Building() {
     }
 
     public Building(long id, String name, String address, String photoUrl,
-                    int x1, int y1, int x2, int y2) {
+                    int x1, int y1, int x2, int y2, double lat, double lng) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -31,6 +33,8 @@ public class Building {
         this.y2 = y2;
         this.cx = (x1 + x2) / 2;
         this.cy = (y1 + y2) / 2;
+        this.lat = lat;
+        this.lng = lng;
     }
 
     public long getId() {
@@ -111,6 +115,19 @@ public class Building {
 
     public void setCy(int cy) {
         this.cy = cy;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+    public double getLat() {
+        return this.lat;
+    }
+    public double getLng() {
+        return this.lng;
     }
 
     // Will be used by the ArrayAdapter in the ListView
