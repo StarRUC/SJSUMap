@@ -23,10 +23,10 @@ public class CurrentLocationWidget extends View {
     @Override
     public void onDraw(Canvas canvas) {
         Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.cur_location);
-        Matrix matrix=new Matrix();
-        matrix.postScale(0.25f, 0.25f);
-        Bitmap dstbmp=Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),
-                bmp.getHeight(),matrix,true);
+        Matrix matrix = new Matrix();
+        matrix.postScale(0.2f, 0.2f);
+        Bitmap dstbmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(),
+                bmp.getHeight(), matrix, true);
         canvas.drawBitmap(dstbmp, 0, 0, null);
 
     }

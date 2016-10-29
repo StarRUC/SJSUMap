@@ -77,8 +77,8 @@ public class MapActivity extends AppCompatActivity{
                     longitude = location.getLongitude();
 
                     int[] newPos = campusManager.mapLocationToPixels(location);
-                    curLoc.setX(newPos[0] - 10);
-                    curLoc.setY(newPos[1] - 30);
+                    curLoc.setX(newPos[0] - 30);
+                    curLoc.setY(newPos[1] - 60);
                     curLoc.setVisibility(View.VISIBLE);
                 }
 

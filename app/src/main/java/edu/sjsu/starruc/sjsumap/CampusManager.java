@@ -27,20 +27,20 @@ public class CampusManager {
             origin.setLongitude(-121.887321);
 
             topLeft = new Location("");
-            topLeft.setLatitude(37.335814);
-            topLeft.setLongitude(-121.885985);
+            topLeft.setLatitude(37.335848);
+            topLeft.setLongitude(-121.886157);
 
             topRight= new Location("");
-            topRight.setLatitude(37.338787);
-            topRight.setLongitude(-121.879688);
+            topRight.setLatitude(37.338958);
+            topRight.setLongitude(-121.879656);
 
             bottomLeft = new Location("");
-            bottomLeft.setLatitude(37.331536);
-            bottomLeft.setLongitude(-121.882821);
+            bottomLeft.setLatitude(37.331445);
+            bottomLeft.setLongitude(-121.882856);
 
             bottomRight = new Location("");
-            bottomRight.setLatitude(37.334564);
-            bottomRight.setLongitude(-121.876544);
+            bottomRight.setLatitude(37.334533);
+            bottomRight.setLongitude(-121.876355);
 
             slope1 = getSlope(topLeft, topRight);
             slope2 = getSlope(topRight, bottomRight);
