@@ -31,8 +31,8 @@ public class MapActivity extends AppCompatActivity{
     private DisplayMetrics metrics;
     private MapPinWidget buildingRectangle;
     private CurrentLocationWidget curLoc;
-    private double latitude;
-    private double longitude;
+    private double latitude = 37.335848;
+    private double longitude = -121.886157;
 
     protected String[] permissions;
     protected LocationManager locationManager;
@@ -70,8 +70,10 @@ public class MapActivity extends AppCompatActivity{
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                curLoc.setVisibility(View.INVISIBLE);
+
                 if (campusManager.isInCampus(location)) {
-                    curLoc.setVisibility(View.INVISIBLE);
+
 
                     latitude = location.getLatitude();
                     longitude = location.getLongitude();
@@ -131,17 +133,17 @@ public class MapActivity extends AppCompatActivity{
 
             }
         });
-
-        searchText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(v.getId() == R.id.search_text && !hasFocus) {
-                    InputMethodManager imm =  (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-                }
-            }
-        });
+//
+//        searchText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if(v.getId() == R.id.search_text && !hasFocus) {
+//                    InputMethodManager imm =  (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//
+//                }
+//            }
+//        });
 
         final Looper looper = null;
         ImageButton searchButton = (ImageButton) findViewById(R.id.search_button);
@@ -163,7 +165,8 @@ public class MapActivity extends AppCompatActivity{
                     .setCancelable(false)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener(){
                         public void onClick(DialogInterface dialog, int id) {
-                            finish();
+
+//                            finish();
                         }
                     });
 
@@ -171,8 +174,10 @@ public class MapActivity extends AppCompatActivity{
             emptyResultAlert.show();
         }
         else {
-            buildingRectangle.setX(building.getCx() * 1380 / 579 - 10);
-            buildingRectangle.setY(building.getCy() * 2280 / 926 - 30);
+//            buildingRectangle.setX(building.getCx() * 1380 / 579 - 10);
+//            buildingRectangle.setY(building.getCy() * 2280 / 926 - 30);
+            buildingRectangle.setX(building.getCx());
+            buildingRectangle.setY(building.getCy() - 100);
             buildingRectangle.setVisibility(View.VISIBLE);
 
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);

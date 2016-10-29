@@ -8,7 +8,6 @@ public class Building {
     private long id;
     private String name;
     private String address;
-    private String photoUrl;
     private int x1;
     private int y1;
     private int x2;
@@ -21,12 +20,11 @@ public class Building {
     public Building() {
     }
 
-    public Building(long id, String name, String address, String photoUrl,
+    public Building(long id, String name, String address,
                     int x1, int y1, int x2, int y2, double lat, double lng) {
         this.id = id;
         this.name = name;
         this.address = address;
-        this.photoUrl = photoUrl;
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
@@ -47,10 +45,6 @@ public class Building {
 
     public String getAddress() {
         return address;
-    }
-
-    public String getPhotoUrl() {
-        return photoUrl;
     }
 
     public int getX1() {
@@ -87,10 +81,6 @@ public class Building {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
     }
 
     public void setX1(int x1) {
@@ -134,7 +124,6 @@ public class Building {
     @Override
     public String toString() {
         return "Name: " + name + "\n"
-                + "Address: " + address + "\n"
-                + "Photo Url: " + photoUrl + "\n";
+                + "Address: " + address + "\n";
     }
 }

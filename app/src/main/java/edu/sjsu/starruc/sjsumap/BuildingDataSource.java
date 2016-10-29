@@ -122,7 +122,6 @@ public class BuildingDataSource {
         building.setId(cursor.getLong(0));
         building.setName(cursor.getString(1));
         building.setAddress(cursor.getString(2));
-        building.setPhotoUrl(cursor.getString(3));
         return building;
     }
 

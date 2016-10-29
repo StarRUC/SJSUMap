@@ -59,43 +59,43 @@ public class CampusManager {
                     "Dr. Martin Luther King, Jr. Library, " +
                             "150 East San Fernando Street, " +
                             "San Jose, CA 95112",
-//                    "King.jpg", 100, 700, 300, 1050);
-                    "King.jpg", 40, 235, 120, 375,37.3358992,-121.8855567);
+                    100, 700, 300, 1050, 37.3358992,-121.8855567);
+//                    "King.jpg", 40, 235, 120, 375,37.3358992,-121.8855567);
 
             addBuilding(2, "Engineering Building",
                     "San Jose State University Charles W. Davidson " +
                             "College of Engineering, 1 Washington " +
                             "Square, San Jose, CA 95112",
-//                    "Eng.jpg", 700, 700, 950, 1100);
-                    "Eng.jpg", 285, 235, 380, 400, 37.33773655,-121.8818146);
+                    700, 700, 950, 1100, 37.33773655,-121.8818146);
+//                    "Eng.jpg", 285, 235, 380, 400, 37.33773655,-121.8818146);
 
             addBuilding(3, "Yoshihiro Uchida Hall",
                     "Yoshihiro Uchida Hall, San Jose, CA 95112",
-//                    "YUH.jpg", 100, 1500, 300, 1750);
-                    "YUH.jpg", 40, 540, 120, 645,37.33342877,-121.88424124);
+                    100, 1500, 300, 1750, 37.33342877,-121.88424124);
+//                    "YUH.jpg", 40, 540, 120, 645,37.33342877,-121.88424124);
 
             addBuilding(4, "Student Union",
                     "Student Union Building, San Jose, CA 95112",
-//                    "SU.jpg", 700, 1100, 1050, 1300);
-                    "SU.jpg", 285, 400, 420, 480,37.33686433,-121.87818825);
+                    700, 1100, 1050, 1300, 37.33686433,-121.87818825);
+//                    "SU.jpg", 285, 400, 420, 480,37.33686433,-121.87818825);
 
             addBuilding(5, "BBC",
                     "Boccardo Business Complex, San Jose, CA 95112",
-//                    "BBC.jpg", 1150, 1300, 1300, 1500);
-                    "BBC.jpg", 455, 480, 520, 540,37.33691724,-122.036078);
+                    1150, 1300, 1300, 1500, 37.33691724,-122.036078);
+//                    "BBC.jpg", 455, 480, 520, 540,37.33691724,-122.036078);
 
             addBuilding(6, "South Parking Garage",
                     "San Jose State University South Garage, " +
                             "330 South 7th Street, San Jose, CA 95112",
-//                    "SPG.jpg", 400, 2050, 700, 2400);
-                    "SPG.jpg", 165, 745, 285, 870,37.3334663,-121.8799324);
+                    400, 2050, 700, 2400, 37.3334663,-121.8799324);
+//                    "SPG.jpg", 165, 745, 285, 870,37.3334663,-121.8799324);
         }
     }
 
     public static void addBuilding(int id, String name, String address,
-                            String photoUrl, int x1, int y1,
+                            int x1, int y1,
                             int x2, int y2, double lat, double lng) {
-        Building b = new Building(id, name, address, photoUrl,
+        Building b = new Building(id, name, address,
                 x1, y1, x2, y2, lat, lng);
         buildingList.add(b);
     }
