@@ -26,7 +26,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 public class BuildingDetailActivity extends AppCompatActivity {
-    private BuildingDataSource dataSource;
+//    private BuildingDataSource dataSource;
     private String url_first = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=";
     private String url_second = "&destinations=";
     private String api_key = "&key=AIzaSyCTVoZI8aOu9zn9TKc2TJtTh8fOSxXkDBI";
@@ -53,8 +53,8 @@ public class BuildingDetailActivity extends AppCompatActivity {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        dataSource = new BuildingDataSource(this);
-        dataSource.open();
+//        dataSource = new BuildingDataSource(this);
+//        dataSource.open();
         String buildingName = getIntent().getStringExtra("buildingName");
         userLatitude = getIntent().getDoubleExtra("latitude", 1.2);
         userLongitude = getIntent().getDoubleExtra("longitude", 1.2);
@@ -66,9 +66,9 @@ public class BuildingDetailActivity extends AppCompatActivity {
 
 
 
-
-        dataSource = new BuildingDataSource(this);
-        dataSource.open();
+//
+//        dataSource = new BuildingDataSource(this);
+//        dataSource.open();
 
         if (building == null) {
             buildingNameTextView.setText("No buildings available");
@@ -113,7 +113,7 @@ public class BuildingDetailActivity extends AppCompatActivity {
                 conn.disconnect();
             }
         }
-        dataSource.close();
+//        dataSource.close();
 
     }
     private void getImage() {
